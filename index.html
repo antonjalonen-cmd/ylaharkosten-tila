@@ -1,0 +1,624 @@
+﻿<!DOCTYPE html>
+<html lang="fi" data-lang="fi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Ylae-Haerkoesen tila — Suomenlampaat kaikissa variossa, Virrat. Karitsanliha, villa ja siitoselamet suoraan tilalta.">
+<title>Ylae-Haerkoesen tila – Suomenlampaat Virrat</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Yeseva+One&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --parchment: #f2ece0;
+  --ink: #1c1814;
+  --oat: #c8a060;
+  --charcoal: #3c3a38;
+  --meadow: #4a6b38;
+  --birch: #d4c8b0;
+  --r: 2px;
+  --font-display: 'Yeseva One', Georgia, serif;
+  --font-mono: 'DM Mono', 'Courier New', monospace;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { background: var(--parchment); color: var(--ink); font-family: var(--font-mono); overflow-x: hidden; }
+
+[data-lang="fi"] .lang-sv, [data-lang="fi"] .lang-en { display: none; }
+[data-lang="sv"] .lang-fi, [data-lang="sv"] .lang-en { display: none; }
+[data-lang="en"] .lang-fi, [data-lang="en"] .lang-sv { display: none; }
+.blk { display: block; }
+
+/* NAV: centered wordmark, lang-left, hamburger-right — no visible text links */
+nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+  background: var(--parchment);
+  border-bottom: 1px solid var(--birch);
+  height: 58px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 1.5rem;
+}
+.nav-wordmark {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  color: var(--ink);
+  text-decoration: none;
+  letter-spacing: 0.01em;
+}
+.nav-lang {
+  position: absolute;
+  left: 1.5rem;
+  display: flex;
+  gap: 0.25rem;
+}
+.lang-btn {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  background: none;
+  border: 1px solid var(--birch);
+  border-radius: 1px;
+  padding: 0.18rem 0.45rem;
+  color: var(--charcoal);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.lang-btn.active, .lang-btn:hover { background: var(--ink); color: var(--parchment); border-color: var(--ink); }
+.hamburger {
+  position: absolute;
+  right: 1.5rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  padding: 0;
+}
+.hamburger span { display: block; height: 1.5px; background: var(--ink); border-radius: 1px; }
+
+/* OVERLAY */
+.menu-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  background: var(--ink);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s;
+}
+.menu-overlay.open { opacity: 1; pointer-events: all; }
+.menu-overlay a {
+  font-family: var(--font-display);
+  font-size: 2rem;
+  color: var(--parchment);
+  text-decoration: none;
+}
+.menu-close {
+  position: absolute;
+  top: 1.25rem;
+  right: 1.5rem;
+  background: none;
+  border: none;
+  color: var(--parchment);
+  font-size: 2rem;
+  cursor: pointer;
+  line-height: 1;
+  font-family: var(--font-mono);
+}
+.menu-lang-overlay { display: flex; gap: 0.5rem; margin-top: 0.5rem; }
+.menu-lang-overlay .lang-btn { background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.3); color: var(--parchment); }
+.menu-lang-overlay .lang-btn.active { background: var(--oat); border-color: var(--oat); color: var(--ink); }
+
+/* HERO */
+.hero {
+  margin-top: 58px;
+  min-height: calc(100vh - 58px);
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 2rem 4rem;
+  overflow: hidden;
+}
+.hero-content {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  max-width: 680px;
+}
+.hero-est {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 400;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--charcoal);
+  margin-bottom: 1.5rem;
+  display: block;
+}
+.hero-name {
+  font-family: var(--font-display);
+  font-size: clamp(3.5rem, 9vw, 7.5rem);
+  line-height: 1.0;
+  color: var(--ink);
+  margin-bottom: 1.5rem;
+}
+.hero-tagline {
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  line-height: 1.8;
+  letter-spacing: 0.04em;
+  color: var(--charcoal);
+  max-width: 420px;
+  margin: 0 auto 2.5rem;
+}
+.hero-cta {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink);
+  text-decoration: none;
+  border-bottom: 1.5px solid var(--oat);
+  padding-bottom: 0.2rem;
+  transition: border-color 0.2s;
+}
+.hero-cta:hover { border-color: var(--ink); }
+
+/* Peeking sheep photo — right edge */
+.hero-peek {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: min(38%, 340px);
+  height: 70%;
+  z-index: 1;
+  overflow: hidden;
+}
+.hero-peek .ph-block { height: 100%; width: 100%; }
+.ph { width:100%; height:100%; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:0.6rem; background: rgba(0,0,0,0.08); color:rgba(28,24,20,0.4); }
+.ph svg { width:36px; height:36px; opacity:0.4; }
+.ph-lbl { font-family:var(--font-mono); font-size:0.68rem; letter-spacing:0.04em; opacity:0.6; text-align:center; padding:0 0.75rem; }
+
+@media (max-width: 768px) {
+  .hero-peek { display: none; }
+  .hero-content { max-width: 100%; }
+}
+</style>
+<style>
+/* SCROLL REVEAL */
+.reveal { opacity:0; transform:translateY(20px); transition:opacity 0.6s ease, transform 0.6s ease; }
+.reveal.visible { opacity:1; transform:none; }
+
+/* SECTIONS */
+section { padding: 5rem 1.5rem; }
+.section-inner { max-width: 1000px; margin: 0 auto; }
+.sec-label {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--oat);
+  margin-bottom: 1rem;
+}
+.sec-h2 {
+  font-family: var(--font-display);
+  font-size: clamp(1.8rem, 4vw, 3rem);
+  line-height: 1.15;
+  margin-bottom: 2rem;
+  color: var(--ink);
+}
+
+/* WOOL COLORS (signature) */
+.wool { background: var(--ink); }
+.wool .sec-label { color: var(--birch); }
+.wool .sec-h2 { color: var(--parchment); }
+.wool-swatches {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+.wool-swatch { display: flex; flex-direction: column; gap: 0.75rem; }
+.swatch-block {
+  width: 100%;
+  aspect-ratio: 1;
+  border-radius: 1px;
+}
+.swatch-white { background: #f0ebe0; }
+.swatch-grey { background: #8c8880; }
+.swatch-brown { background: #7c5840; }
+.swatch-black { background: #2c2820; }
+.swatch-name {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  color: var(--parchment);
+  text-transform: uppercase;
+}
+.swatch-desc { font-family: var(--font-mono); font-size: 0.68rem; color: rgba(244,236,224,0.6); line-height: 1.6; }
+.wool-note {
+  margin-top: 2.5rem;
+  padding: 1.5rem;
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 1px;
+}
+.wool-note p { font-family: var(--font-mono); font-size: 0.82rem; line-height: 1.8; color: rgba(244,236,224,0.8); }
+@media (max-width: 640px) { .wool-swatches { grid-template-columns: repeat(2, 1fr); } }
+
+/* STORY */
+.story { background: var(--parchment); }
+.story-inner { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: start; }
+.story-left { display: flex; flex-direction: column; gap: 1.2rem; }
+.story-right { display: flex; flex-direction: column; gap: 1.5rem; }
+.story-photo { aspect-ratio: 3/2; overflow: hidden; border-radius: var(--r); }
+.story-text { font-family: var(--font-mono); font-size: 0.88rem; line-height: 1.9; color: var(--charcoal); }
+.year-stamp {
+  font-family: var(--font-display);
+  font-size: clamp(4rem, 10vw, 7rem);
+  color: rgba(28,24,20,0.08);
+  line-height: 1;
+  letter-spacing: -0.02em;
+  user-select: none;
+}
+.stat-row { display: flex; flex-direction: column; gap: 0.25rem; border-left: 2px solid var(--oat); padding-left: 1rem; }
+.stat-num { font-family: var(--font-display); font-size: 1.8rem; color: var(--ink); line-height: 1; }
+.stat-lbl { font-family: var(--font-mono); font-size: 0.65rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--charcoal); }
+@media (max-width: 768px) { .story-inner { grid-template-columns: 1fr; gap: 2.5rem; } }
+
+/* PRODUCTS */
+.products { background: var(--charcoal); }
+.products .sec-label { color: var(--birch); }
+.products .sec-h2 { color: var(--parchment); }
+.products-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: rgba(255,255,255,0.1); margin-top: 2rem; }
+.product-item { background: var(--charcoal); padding: 2rem 1.5rem; display: flex; flex-direction: column; gap: 0.75rem; }
+.product-photo-wrap { aspect-ratio: 4/3; overflow: hidden; border-radius: var(--r); margin-bottom: 0.5rem; }
+.product-label { font-family: var(--font-mono); font-size: 0.62rem; font-weight: 500; letter-spacing: 0.16em; text-transform: uppercase; color: var(--oat); }
+.product-name { font-family: var(--font-display); font-size: 1.4rem; color: var(--parchment); line-height: 1.2; }
+.product-desc { font-family: var(--font-mono); font-size: 0.78rem; line-height: 1.8; color: rgba(244,236,224,0.65); }
+@media (max-width: 768px) { .products-grid { grid-template-columns: 1fr; } }
+
+/* CONTACT */
+.contact { background: var(--parchment); }
+.contact-inner { display: grid; grid-template-columns: 2fr 1fr; gap: 4rem; align-items: start; }
+.contact-intro { font-family: var(--font-mono); font-size: 0.88rem; line-height: 1.9; color: var(--charcoal); margin-bottom: 1.5rem; }
+.contact-items { display: flex; flex-direction: column; gap: 0.75rem; }
+.c-item { display: flex; align-items: flex-start; gap: 0.6rem; font-family: var(--font-mono); font-size: 0.82rem; color: var(--ink); line-height: 1.6; }
+.c-item svg { width: 18px; height: 18px; flex-shrink: 0; margin-top: 2px; stroke: var(--oat); }
+.c-item a { color: var(--ink); text-decoration: none; }
+.c-item a:hover { color: var(--meadow); }
+.contact-note { border: 1px solid var(--birch); padding: 1.5rem; border-radius: var(--r); }
+.contact-note h4 { font-family: var(--font-mono); font-size: 0.65rem; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; color: var(--oat); margin-bottom: 0.75rem; }
+.contact-note p { font-family: var(--font-mono); font-size: 0.8rem; line-height: 1.8; color: var(--charcoal); }
+@media (max-width: 768px) { .contact-inner { grid-template-columns: 1fr; } }
+
+/* FOOTER */
+.footer { background: var(--ink); padding: 1.5rem; }
+.footer-inner { max-width: 1000px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
+.footer-name { font-family: var(--font-display); font-size: 1rem; color: var(--birch); }
+.footer-demo { font-family: var(--font-mono); font-size: 0.65rem; color: rgba(212,200,176,0.4); letter-spacing: 0.06em; }
+</style>
+</head>
+<body>
+
+<div class="menu-overlay" role="dialog" aria-modal="true">
+  <button class="menu-close" aria-label="Sulje">&times;</button>
+  <a href="#villa"><span class="lang-fi">Villavariot</span><span class="lang-sv">Ullfarger</span><span class="lang-en">Wool colours</span></a>
+  <a href="#tarina"><span class="lang-fi">Tarina</span><span class="lang-sv">Historia</span><span class="lang-en">Story</span></a>
+  <a href="#tuotteet"><span class="lang-fi">Tuotteet</span><span class="lang-sv">Produkter</span><span class="lang-en">Products</span></a>
+  <a href="#yhteystiedot"><span class="lang-fi">Yhteystiedot</span><span class="lang-sv">Kontakt</span><span class="lang-en">Contact</span></a>
+  <div class="menu-lang-overlay">
+    <button class="lang-btn" data-l="fi">FI</button>
+    <button class="lang-btn" data-l="sv">SV</button>
+    <button class="lang-btn" data-l="en">EN</button>
+  </div>
+</div>
+
+<nav>
+  <div class="nav-lang">
+    <button class="lang-btn" data-l="fi">FI</button>
+    <button class="lang-btn" data-l="sv">SV</button>
+    <button class="lang-btn" data-l="en">EN</button>
+  </div>
+  <a href="#" class="nav-wordmark">Ylae-Haerkoesen tila</a>
+  <button class="hamburger" aria-label="Valikko" aria-expanded="false">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<main>
+  <!-- HERO -->
+  <section class="hero" aria-label="Hero">
+    <div class="hero-content">
+      <span class="hero-est">Est. 1906 &nbsp;&mdash;&nbsp; Virrat, Pirkanmaa</span>
+      <h1 class="hero-name">
+        <span class="lang-fi">Ylae-<br>Haerkoesen<br>tila</span>
+        <span class="lang-sv blk">Ylae-<br>Haerkoesen<br>gard</span>
+        <span class="lang-en blk">Ylae-<br>Haerkoesen<br>farm</span>
+      </h1>
+      <p class="hero-tagline">
+        <span class="lang-fi">Suomenlampaat kaikissa luonnon variossa — liha, villa ja siitoselamet suoraan tilalta Virroilta.</span>
+        <span class="lang-sv">Finlandsfar i alla naturliga farger — kott, ull och avelsdjur direkt fran garden i Virrat.</span>
+        <span class="lang-en">Finnish sheep in all natural colours — meat, wool and breeding animals direct from the farm in Virrat.</span>
+      </p>
+      <a href="#yhteystiedot" class="hero-cta">
+        <span class="lang-fi">Ota yhteytta</span>
+        <span class="lang-sv">Ta kontakt</span>
+        <span class="lang-en">Get in touch</span>
+      </a>
+    </div>
+    <!-- Peeking sheep photo -->
+    <div class="hero-peek">
+      <div class="ph-block" style="height:100%">
+        <div class="ph">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><ellipse cx="12" cy="10" rx="7" ry="5"/><path d="M5 10c0 5 3 8 7 8s7-3 7-8"/></svg>
+          <span class="ph-lbl">suomenlammas-portrait.jpg</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- WOOL COLORS SWATCH — signature component -->
+  <section class="wool" id="villa">
+    <div class="section-inner">
+      <span class="sec-label reveal"><span class="lang-fi">Suomenlammas — luonnon varikirjo</span><span class="lang-sv">Finlandsfar — naturens fargskala</span><span class="lang-en">Finnish sheep — nature's colour palette</span></span>
+      <h2 class="sec-h2 reveal">
+        <span class="lang-fi">Yksi rotu, nelja variota</span>
+        <span class="lang-sv blk">En ras, fyra farger</span>
+        <span class="lang-en blk">One breed, four colours</span>
+      </h2>
+      <div class="wool-swatches">
+        <div class="wool-swatch reveal">
+          <div class="swatch-block swatch-white"></div>
+          <div class="swatch-name"><span class="lang-fi">Valkoinen</span><span class="lang-sv">Vit</span><span class="lang-en">White</span></div>
+          <div class="swatch-desc"><span class="lang-fi">Yleisin variante. Sopii luonnonvalkoisena tai vaerjatyyna.</span><span class="lang-sv">Vanligast. Passar naturvit eller fargjad.</span><span class="lang-en">Most common. Suitable natural white or dyed.</span></div>
+        </div>
+        <div class="wool-swatch reveal">
+          <div class="swatch-block swatch-grey"></div>
+          <div class="swatch-name"><span class="lang-fi">Harmaa</span><span class="lang-sv">Gra</span><span class="lang-en">Grey</span></div>
+          <div class="swatch-desc"><span class="lang-fi">Kaunis luonnonharmaa, harvinaisempi ja haettu variante.</span><span class="lang-sv">Vacker naturlig gra, mer sallsynt och eftertraktad.</span><span class="lang-en">Beautiful natural grey, rarer and sought-after.</span></div>
+        </div>
+        <div class="wool-swatch reveal">
+          <div class="swatch-block swatch-brown"></div>
+          <div class="swatch-name"><span class="lang-fi">Ruskea</span><span class="lang-sv">Brun</span><span class="lang-en">Brown</span></div>
+          <div class="swatch-desc"><span class="lang-fi">Lampoa ja muhkeaa — ruskeat suomenlampaat ovat erikoisuus.</span><span class="lang-sv">Varmt och generost — bruna finlandsfar ar en specialitet.</span><span class="lang-en">Warm and luxurious — brown Finnish sheep are a specialty.</span></div>
+        </div>
+        <div class="wool-swatch reveal">
+          <div class="swatch-block swatch-black"></div>
+          <div class="swatch-name"><span class="lang-fi">Musta</span><span class="lang-sv">Svart</span><span class="lang-en">Black</span></div>
+          <div class="swatch-desc"><span class="lang-fi">Tummaa ja dramaattista — haihtyy usein harmaaksi ikaantyessa.</span><span class="lang-sv">Mork och dramatisk — bleknar ofta till gra med aret.</span><span class="lang-en">Dark and dramatic — often fades to grey with age.</span></div>
+        </div>
+      </div>
+      <div class="wool-note reveal">
+        <p>
+          <span class="lang-fi">Ylae-Haerkoesen tilalla kasvatetaan suomenlampaan kaikkia luonnonvareita. Villa myydaan kehramaton tai langaksi jalostettuna. Kysy saatavuudesta sahkopostilla.</span>
+          <span class="lang-sv">Pa Ylae-Haerkoesen gard foeder vi upp finlandsfar i alla naturliga farger. Ullen saljs oforsponnen eller spunnen till garn. Fraga om tillganglighet via e-post.</span>
+          <span class="lang-en">At Ylae-Haerkoesen farm we raise Finnish sheep in all natural colours. Wool sold raw or spun into yarn. Ask about availability by email.</span>
+        </p>
+      </div>
+    </div>
+  </section>
+  <!-- STORY -->
+  <section class="story" id="tarina">
+    <div class="section-inner story-inner">
+      <div class="story-left">
+        <div class="year-stamp">1906</div>
+        <div class="stat-row reveal">
+          <div class="stat-num">120+</div>
+          <div class="stat-lbl"><span class="lang-fi">Vuotta maanviljelysta</span><span class="lang-sv">Ar av jordbruk</span><span class="lang-en">Years of farming</span></div>
+        </div>
+        <div class="stat-row reveal">
+          <div class="stat-num"><span class="lang-fi">Luomu</span><span class="lang-sv">Ekologisk</span><span class="lang-en">Organic</span></div>
+          <div class="stat-lbl"><span class="lang-fi">Kasvatus</span><span class="lang-sv">Uppfodning</span><span class="lang-en">Production</span></div>
+        </div>
+        <div class="story-photo reveal">
+          <div class="ph-block" style="height:220px">
+            <div class="ph">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>
+              <span class="ph-lbl">farm-buildings.jpg</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="story-right">
+        <span class="sec-label reveal"><span class="lang-fi">Tarina</span><span class="lang-sv">Historia</span><span class="lang-en">Story</span></span>
+        <h2 class="sec-h2 reveal">
+          <span class="lang-fi">Koro-suku ja suomenlampaat</span>
+          <span class="lang-sv blk">Familjen Koro och finlandsfaret</span>
+          <span class="lang-en blk">The Koro family and the Finnish sheep</span>
+        </h2>
+        <p class="story-text reveal">
+          <span class="lang-fi">Ylae-Haerkoesen tila on Koro-suvun kotitila Virroilla. Viljelysta on harjoitettu jo vuodesta 1906 — yli sata vuotta saman perheen omistuksessa. Nykyinen yrittajae Juha Koro otti tilan johdon sukupolvenvaihdoksella vuonna 2005.</span>
+          <span class="lang-sv">Ylae-Haerkoesen garden ar Koro-familjens hemgard i Virrat. Jordbruk har bedrivits sedan 1906 — mer an hundra ar i samma familjs age. Nuvarande foretagare Juha Koro tog over garden vid generationsskiftet ar 2005.</span>
+          <span class="lang-en">Ylae-Haerkoesen farm is the Koro family's home farm in Virrat. Farming has been practised since 1906 — over a hundred years in the same family's ownership. Current entrepreneur Juha Koro took over the farm in a generational change in 2005.</span>
+        </p>
+        <p class="story-text reveal">
+          <span class="lang-fi">Tila on luomutila, jossa viljanviljelyn ohessa kasvatetaan suomenlammaspuhtaita jalostuselaemia. Suomenlammas — rodun kaikkia luonnonvareja — on erityisesti sydaemmen asia: valkoiset, harmaat, ruskeat ja mustat lampaat laiduntavat Virtojen maisemissa.</span>
+          <span class="lang-sv">Garden ar en ekologisk gard dar man vid sidan av spannmalodling avel upp rasrena finlandsfar. Finlandsfaret — rasens alla naturliga farger — ar en hjartefraega: vita, gra, bruna och svarta far betar i Virrats landskap.</span>
+          <span class="lang-en">The farm is organic, where alongside grain cultivation pedigree Finnish sheep are bred. The Finnish sheep — the breed's all natural colours — is a matter of heart: white, grey, brown and black sheep graze in the Virrat landscape.</span>
+        </p>
+        <p class="story-text reveal">
+          <span class="lang-fi">Nina Snellman tyoskentelee tilalla Juhan rinnalla. Tuotteet — liha, villa ja siitoselamet — myydaan suoraan kiinnostuneille. Virrat sijaitsee Pirkanmaalla, hiukan yli 100 km Tampereesta pohjoiseen.</span>
+          <span class="lang-sv">Nina Snellman arbetar pa garden sida vid sida med Juha. Produkterna — kott, ull och avelsdjur — saljs direkt till intresserade. Virrat ligger i Birkaland, drygt 100 km norr om Tammerfors.</span>
+          <span class="lang-en">Nina Snellman works on the farm alongside Juha. Products — meat, wool and breeding animals — are sold directly to interested buyers. Virrat is in Pirkanmaa, just over 100 km north of Tampere.</span>
+        </p>
+      </div>
+    </div>
+  </section>
+  <!-- PRODUCTS -->
+  <section class="products" id="tuotteet">
+    <div class="section-inner">
+      <span class="sec-label reveal"><span class="lang-fi">Tuotteet</span><span class="lang-sv">Produkter</span><span class="lang-en">Products</span></span>
+      <h2 class="sec-h2 reveal">
+        <span class="lang-fi">Suoraan Virroilta</span>
+        <span class="lang-sv blk">Direkt fran Virrat</span>
+        <span class="lang-en blk">Straight from Virrat</span>
+      </h2>
+      <div class="products-grid">
+        <div class="product-item reveal">
+          <div class="product-photo-wrap">
+            <div class="ph-block" style="height:180px">
+              <div class="ph">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="7" width="20" height="14" rx="2"/><line x1="12" y1="7" x2="12" y2="21"/></svg>
+                <span class="ph-lbl">liha.jpg</span>
+              </div>
+            </div>
+          </div>
+          <span class="product-label"><span class="lang-fi">Suoramyynti</span><span class="lang-sv">Direktforsaljning</span><span class="lang-en">Direct sales</span></span>
+          <h3 class="product-name"><span class="lang-fi">Karitsanliha</span><span class="lang-sv">Lammkott</span><span class="lang-en">Lamb meat</span></h3>
+          <p class="product-desc">
+            <span class="lang-fi">Luonnonmukaista suomalaiskaritsaa. Myydaan tilauksesta. Ota yhteytta saatavuudesta ja toimituksesta.</span>
+            <span class="lang-sv">Ekologiskt finskt lammkott. Saljs pa bestallning. Kontakta oss om tillganglighet och leverans.</span>
+            <span class="lang-en">Organic Finnish lamb meat. Sold to order. Contact us about availability and delivery.</span>
+          </p>
+        </div>
+        <div class="product-item reveal">
+          <div class="product-photo-wrap">
+            <div class="ph-block" style="height:180px">
+              <div class="ph">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="4"/></svg>
+                <span class="ph-lbl">villa.jpg</span>
+              </div>
+            </div>
+          </div>
+          <span class="product-label"><span class="lang-fi">Luonnonvarit</span><span class="lang-sv">Naturfarger</span><span class="lang-en">Natural colours</span></span>
+          <h3 class="product-name"><span class="lang-fi">Villa ja lanka</span><span class="lang-sv">Ull och garn</span><span class="lang-en">Wool and yarn</span></h3>
+          <p class="product-desc">
+            <span class="lang-fi">Suomenlampaanvillaa kaikissa luonnonvariossa — valkoinen, harmaa, ruskea, musta. Kehramaton tai langaksi.</span>
+            <span class="lang-sv">Finlandsfar-ull i alla naturliga farger. Oforsponnen eller spunnen till garn.</span>
+            <span class="lang-en">Finnish sheep wool in all natural colours. Raw fleece or spun into yarn.</span>
+          </p>
+        </div>
+        <div class="product-item reveal">
+          <div class="product-photo-wrap">
+            <div class="ph-block" style="height:180px">
+              <div class="ph">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="8" r="4"/><path d="M6 20c0-3 3-5 6-5s6 2 6 5"/></svg>
+                <span class="ph-lbl">siitoselamet.jpg</span>
+              </div>
+            </div>
+          </div>
+          <span class="product-label"><span class="lang-fi">Jalostuslammola</span><span class="lang-sv">Avelsgard</span><span class="lang-en">Breeding flock</span></span>
+          <h3 class="product-name"><span class="lang-fi">Siitoselamet</span><span class="lang-sv">Avelsdjur</span><span class="lang-en">Breeding animals</span></h3>
+          <p class="product-desc">
+            <span class="lang-fi">Laadukkaita puhtaita suomalaislampaita — kaikissa variossa — myytavana ajankohtaisesti. Kysy saatavuudesta.</span>
+            <span class="lang-sv">Kvalitets renrasiga finlandsfar — i alla farger — till salu periodvis. Fraga om tillganglighet.</span>
+            <span class="lang-en">Quality purebred Finnish sheep — in all colours — for sale periodically. Ask about availability.</span>
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section class="contact" id="yhteystiedot">
+    <div class="section-inner">
+      <span class="sec-label reveal"><span class="lang-fi">Yhteystiedot</span><span class="lang-sv">Kontakt</span><span class="lang-en">Contact</span></span>
+      <h2 class="sec-h2 reveal">
+        <span class="lang-fi">Kysy, tilaa, tule kaymaan</span>
+        <span class="lang-sv blk">Fraga, bestall, kom pa besok</span>
+        <span class="lang-en blk">Ask, order, come visit</span>
+      </h2>
+      <div class="contact-inner">
+        <div>
+          <p class="contact-intro reveal">
+            <span class="lang-fi">Tuotteet myydaan suoraan tilalta. Ota yhteytta puhelimella tai sahkopostilla saatavuudesta, toimituksesta ja hinnoista.</span>
+            <span class="lang-sv">Produkterna saljs direkt fran garden. Kontakta oss per telefon eller e-post om tillganglighet, leverans och priser.</span>
+            <span class="lang-en">Products sold directly from the farm. Contact us by phone or email about availability, delivery and pricing.</span>
+          </p>
+          <div class="contact-items">
+            <div class="c-item reveal">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5"><circle cx="12" cy="10" r="3"/><path d="M12 2a8 8 0 010 16c-4 0-8-4-8-8a8 8 0 018-8z"/></svg>
+              <span>Vaskivedentie 243, 34800 Virrat<br>Pirkanmaa</span>
+            </div>
+            <div class="c-item reveal">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5"><rect x="5" y="2" width="14" height="20" rx="3"/></svg>
+              <a href="tel:0406679151">040 667 9151</a>
+            </div>
+            <div class="c-item reveal">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5"><rect x="2" y="4" width="20" height="16" rx="2"/><polyline points="2,4 12,13 22,4"/></svg>
+              <a href="mailto:suomenlampaita@gmail.com">suomenlampaita@gmail.com</a>
+            </div>
+          </div>
+        </div>
+        <div class="contact-note reveal">
+          <h4><span class="lang-fi">Juha Koro &amp; Nina Snellman</span><span class="lang-sv">Juha Koro &amp; Nina Snellman</span><span class="lang-en">Juha Koro &amp; Nina Snellman</span></h4>
+          <p>
+            <span class="lang-fi">Virrat on noin 100 km Tampereelta pohjoiseen. Tilakaynnit sopimuksen mukaan — tervetuloa tutustumaan laumaan.</span>
+            <span class="lang-sv">Virrat ligger ca 100 km norr om Tampere. Gardsbesok efter overenskommelse.</span>
+            <span class="lang-en">Virrat is about 100 km north of Tampere. Farm visits by arrangement — welcome to meet the flock.</span>
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <span class="footer-name">Ylae-Haerkoesen tila</span>
+    <span class="footer-demo">
+      <span class="lang-fi">Demo suunniteltu Anton Jalonen</span>
+      <span class="lang-sv">Demo designad Anton Jalonen</span>
+      <span class="lang-en">Demo designed by Anton Jalonen</span>
+    </span>
+  </div>
+</footer>
+
+<script>
+function setLang(l){
+  document.documentElement.setAttribute('data-lang',l);
+  localStorage.setItem('ylahark-lang',l);
+  document.querySelectorAll('.lang-btn').forEach(function(b){b.classList.toggle('active',b.dataset.l===l);});
+}
+(function(){
+  var s=localStorage.getItem('ylahark-lang')||'fi';
+  setLang(s);
+  document.querySelectorAll('.lang-btn').forEach(function(b){b.addEventListener('click',function(){setLang(b.dataset.l);});});
+})();
+var ham=document.querySelector('.hamburger');
+var ov=document.querySelector('.menu-overlay');
+ham.addEventListener('click',function(){
+  var open=ov.classList.toggle('open');
+  ham.setAttribute('aria-expanded',String(open));
+  document.body.style.overflow=open?'hidden':'';
+});
+ov.querySelector('.menu-close').addEventListener('click',function(){
+  ov.classList.remove('open');
+  ham.setAttribute('aria-expanded','false');
+  document.body.style.overflow='';
+});
+ov.querySelectorAll('a').forEach(function(a){
+  a.addEventListener('click',function(){
+    ov.classList.remove('open');
+    ham.setAttribute('aria-expanded','false');
+    document.body.style.overflow='';
+  });
+});
+var io=new IntersectionObserver(function(entries){
+  entries.forEach(function(e){if(e.isIntersecting){e.target.classList.add('visible');io.unobserve(e.target);}});
+},{threshold:0.1});
+document.querySelectorAll('.reveal').forEach(function(r){io.observe(r);});
+</script>
+</body>
+</html>
